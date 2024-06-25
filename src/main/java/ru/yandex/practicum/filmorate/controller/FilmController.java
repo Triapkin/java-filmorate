@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -13,7 +14,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/films")
+@RequestMapping("/films")
 public class FilmController {
 
     private final Map<Integer, Film> films = new HashMap<>();
@@ -25,7 +26,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film putFilm(@RequestBody Film newFilm) {
+    public Film putFilm(@Valid @RequestBody Film newFilm) {
         if (newFilm.getId() == 0) {
             throw new ValidationException("Film id is required");
         }
@@ -45,7 +46,7 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film addFilm(@RequestBody Film film) {
+    public Film addFilm(@Valid @RequestBody Film film) {
         validateFilm(film);
         film.setId(getNextId());
         films.put(film.getId(), film);
@@ -54,7 +55,7 @@ public class FilmController {
     }
 
     private void validateFilm(Film film) {
-        if (!film.getReleaseDate().isAfter(LocalDate.of(1985, 12, 28)))
+        if (!film.getReleaseDate().isAfter(LocalDate.of(1895, 12, 28)))
             throw new ValidationException("Film release date must be after 1985");
     }
 
